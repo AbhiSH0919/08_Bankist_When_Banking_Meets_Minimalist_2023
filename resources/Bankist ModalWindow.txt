@@ -1,0 +1,212 @@
+/_ ==================MODAL WINDOW================== _/
+
+<!-- ==================MODAL WINDOW HTML================== -->
+  <div class="modal " id="acModal">
+    <button class="btn--close-modal">&times;</button>
+    <div class="signUpModal">
+      <h2 class="modal__header">Open your bank account <br />
+        in just <span class="highlight">5 minutes</span>
+      </h2>
+      <form class="modal__form">
+        <label for="fName">First Name</label>
+        <input type="text" id="fName" />
+        <label for="lName">Last Name</label>
+        <input type="text" id="lName" />
+        <label for="email">Email Address</label>
+        <input type="email" id="email" autocomplete="email" />
+        <label for="password">Pin</label>
+        <input type="password" id="password">
+        <button class="btn submit__next-btn">Next step &rarr;</button>
+        <div class="modal__form__loginBox">If you allredy have an account <button class="btn--text loginModal__link-btn "> Login Now &darr;</button>
+        </div>
+      </form>
+    </div>
+        <div class="loginModal">
+      <h2 class="modal__header">
+        <img src="img/icon.png" alt="Logo" class="modal__logo" /> Log in to get started
+      </h2>
+      <form class="modal__form">
+        <label for="userName">User Name</label>
+        <input type="text" id="userName" />
+        <label for="userPin">Pin</label>
+        <input type="number" id="userPin">
+        <button class="btn submit__login-btn">Login Now&rarr;</button>
+        <div class="modal__form__loginBox">Don't have an account
+          <button class="btn--show-modal btn--text">Open Now &darr;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="overlay hidden"></div>
+
+<!-- ==================MODAL WINDOW CSS================== -->
+
+.modal {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+max-width: 90rem;
+background-color: #f3f3f3;
+padding: 5rem 6rem;
+box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+z-index: 1000;
+transition: all 0.5s;
+}
+
+.btn--close-modal {
+font-family: inherit;
+color: inherit;
+position: absolute;
+top: 0.5rem;
+right: 2rem;
+font-size: 4rem;
+cursor: pointer;
+border: none;
+background: none;
+}
+
+.loginModal {
+display: none;
+}
+
+.modal\_\_header {
+line-height: 1.5;
+font-size: 3.25rem;
+margin-bottom: 4.5rem;
+}
+
+.modal**header .modal**logo {
+display: inline-flex;
+height: 5rem;
+transform: translateY(25%);
+filter: contrast(1%) invert(90%);
+background-blend-mode: darken;
+}
+
+.modal\_\_form {
+display: grid;
+grid-template-columns: repeat(2, 1fr 2fr);
+align-items: center;
+gap: 2.5rem;
+margin: 0 3rem;
+}
+
+.modal\_\_form label {
+font-size: 1.7rem;
+font-weight: 500;
+}
+
+.modal\_\_form input {
+font-size: 1.7rem;
+padding: 1rem 1.5rem;
+border: 1px solid #ddd;
+border-radius: 0.5rem;
+}
+
+.modal\_\_form button {
+grid-column: 1 / -1;
+justify-self: center;
+margin-top: 1rem;
+}
+
+.modal**form**loginBox {
+grid-column: 1 / -1;
+text-align: center;
+}
+
+.login**link**btn {
+text-decoration: none;
+}
+
+.hidden {
+visibility: hidden;
+opacity: 0;
+}
+
+.overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+backdrop-filter: blur(4px);
+z-index: 100;
+transition: all 0.5s;
+}
+
+<!-- ==================MODAL WINDOW JAVASCRIPT================== -->
+
+const signUpModal = modal.querySelector(".signUpModal");
+const loginModal = modal.querySelector(".loginModal");
+
+const openModal = function (e) {
+e.preventDefault();
+modal.classList.remove("hidden");
+overlay.classList.remove("hidden");
+signUpModal.style.display = "block";
+loginModal.style.display = "none";
+};
+
+const closeModal = function () {
+modal.classList.add("hidden");
+overlay.classList.add("hidden");
+};
+
+userName.value = "ak";
+userPin.value = 2244;
+modal.addEventListener("click", function (e) {
+e.preventDefault();
+console.log(e.target);
+if (e.target.classList.contains("btn--close-modal")) closeModal();
+
+    if (e.target.classList.contains("submit__next-btn")) {
+    	console.log("submit to the next form");
+    }
+
+    if (e.target.classList.contains("loginModal__link-btn")) {
+    	signUpModal.style.display = "none";
+    	loginModal.style.display = "block";
+    }
+
+    if (e.target.classList.contains("submit__login-btn")) {
+    	console.log("submit to the login now btn and open movements app");
+
+    	const currentAccount = accounts.find(
+    		(acc) => acc.username === userName.value
+    	);
+    	console.log(currentAccount);
+
+    	if (currentAccount?.pin === +userPin.value) {
+    		// UI and message
+    		labelWelcome.textContent = `Welcome again, ${
+    			currentAccount.owner.split(" ")[0]
+    		}`;
+    		containerApp.style.opacity = 1;
+
+    		// stop live date and time updating if allredy running & start
+    		if (liveTimer) clearInterval(liveTimer);
+    		updateDateAndTime(currentAccount);
+
+    		// update UI
+    		updateUI(currentAccount);
+
+    		console.log(currentAccount);
+    	} else {
+    		alert("Invalid Details, Please Check Again!");
+    	}
+    }
+
+});
+
+// ///////////////////MODAL OPEN & CLOSE////////////////////////
+btnsOpenModal.forEach((el) => el.addEventListener("click", openModal));
+
+overlay.addEventListener("click", closeModal);
+
+document.addEventListener("keydown", function (e) {
+if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+closeModal();
+}
+});
